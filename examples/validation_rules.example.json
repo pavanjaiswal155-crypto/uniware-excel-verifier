@@ -1,0 +1,15 @@
+{
+  "description": "Example only. Configure these values only if they match the official template and the operation.",
+  "file_type": "inventory_import",
+  "required_columns": [
+    "SKU",
+    "Quantity",
+    "Warehouse"
+  ],
+  "unique_columns": [
+    "SKU"
+  ],
+  "notes": [
+    "Do not assume SKU must be unique in every Uniware operation."
+  ]
+}

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Uniware Excel Verifier</title>
+<link rel="stylesheet" href="/static/styles.css?v=2">
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-mark">U</div><div><strong>Uniware Verifier</strong><small>Excel quality workspace</small></div></div>
+    <nav>
+      <a class="nav-item active" href="#workspace"><span>▦</span> Verification workspace</a>
+      <a class="nav-item" href="#results"><span>☷</span> Results & issues</a>
+      <a class="nav-item" href="#downloads"><span>⇩</span> Reports & exports</a>
+    </nav>
+    <div class="sidebar-note"><span class="dot"></span><div><strong>Local verification</strong><small>Files are processed by this app.</small></div></div>
+    <div class="side-foot">MVP · v0.1.0</div>
+  </aside>
+  <main class="main">
+    <header class="topbar"><div><div class="eyebrow">DATA OPERATIONS / QUALITY CHECK</div><h1>Excel verification</h1><p class="subtitle">Catch spreadsheet issues before your Uniware import.</p></div><div class="top-pill"><span class="dot"></span> Validation engine ready</div></header>
+    <section class="notice"><div class="notice-icon">i</div><div><strong>Important</strong><p>This version runs local data-quality checks. It does not confirm Uniware acceptance. Configure official templates and rules before treating results as Uniware-specific verification.</p></div></section>
+    <section id="workspace" class="panel">
+      <div class="section-heading"><div><h2>1. Upload your file</h2><p>Choose an Excel workbook or CSV exported for Uniware.</p></div><span class="step">STEP 01</span></div>
+      <div id="dropzone" class="dropzone">
+        <div class="upload-icon">↑</div><h3>Drag and drop your file here</h3><p>or choose a file from your computer</p>
+        <label class="primary-btn file-btn">Choose file<input id="fileInput" type="file" accept=".xlsx,.xls,.csv"></label>
+        <small>Supported: .xlsx, .xls, .csv · Maximum 20 MB</small>
+      </div>
+      <div id="uploadProgress" class="progress-wrap hidden"><div class="progress-track"><div class="progress-bar"></div></div><span>Reading spreadsheet…</span></div>
+      <div id="fileMeta" class="file-meta hidden"></div>
+      <div id="config" class="config-grid hidden">
+        <div class="field"><label for="sheetSelect">Worksheet</label><select id="sheetSelect"></select><small>CSV files use a single data table.</small></div>
+        <div class="field"><label for="requiredCols">Required columns <span class="optional">optional</span></label><input id="requiredCols" placeholder="e.g. SKU, Quantity, Order ID"><small>Comma-separated; use official template requirements.</small></div>
+        <div class="field"><label for="uniqueCols">Columns that must be unique <span class="optional">optional</span></label><input id="uniqueCols" placeholder="e.g. Order ID"><small>Only add identifiers that must be unique for this operation.</small></div>
+      </div>
+      <div id="previewWrap" class="preview-wrap hidden"><div class="table-heading"><h3>Data preview</h3><span id="previewCount" class="muted"></span></div><div class="table-scroll"><table id="previewTable"></table></div><p class="hint">Preview shows up to 100 rows. The validation engine checks all parsed rows.</p></div>
+      <div class="actions"><button id="verifyBtn" class="primary-btn" disabled>Run verification <span>→</span></button><span id="verifyHint" class="muted">Upload a file to begin.</span></div>
+    </section>
+    <section id="results" class="panel hidden">
+      <div class="section-heading"><div><h2>2. Verification results</h2><p id="resultSub">Review the checks and resolve blocking errors.</p></div><span id="statusBadge" class="status-badge">NOT VERIFIED</span></div>
+      <div class="stats-grid">
+        <div class="stat"><span>Rows checked</span><strong id="rowsChecked">0</strong><small>Data rows</small></div>
+        <div class="stat"><span>Passed rows</span><strong id="passedRows">0</strong><small>Rows without blocking errors</small></div>
+        <div class="stat stat-error"><span>Failed rows</span><strong id="failedRows">0</strong><small>Rows with errors</small></div>
+        <div class="stat stat-warning"><span>Warnings</span><strong id="warningCount">0</strong><small id="warningRows">0 rows affected</small></div>
+      </div>
+      <div class="result-toolbar"><div><h3>Issues found</h3><p id="issueSummary" class="muted"></p></div><div class="filters"><input id="issueSearch" placeholder="Search issues…" aria-label="Search issues"><select id="severityFilter" aria-label="Filter severity"><option value="all">All severities</option><option value="error">Errors</option><option value="warning">Warnings</option></select></div></div>
+      <div class="table-scroll issue-scroll"><table><thead><tr><th>Row</th><th>Column</th><th>Severity</th><th>Issue & explanation</th><th>Original value</th><th>Guidance</th><th>Proposed value / approve</th></tr></thead><tbody id="issuesBody"></tbody></table></div><div class="actions"><button id="applyCorrectionsBtn" class="secondary-btn">Apply approved corrections & re-verify</button><span class="muted">Enter a new value manually; only checked changes will be applied.</span></div>
+      <div id="noIssues" class="empty-state hidden"><div>✓</div><strong>No issues found in the configured checks</strong><p>Remember: this does not prove Uniware will accept the file.</p></div>
+    </section>
+    <section id="downloads" class="panel hidden">
+      <div class="section-heading"><div><h2>3. Export and download</h2><p>Download a report or a clean copy of the selected data.</p></div><span class="step">STEP 03</span></div>
+      <div class="download-grid">
+        <div class="download-card"><div class="download-icon">▤</div><div><strong>Verification report</strong><p>Summary, issue details, and approved changes.</p></div><button id="reportXlsx" class="secondary-btn">Excel report ↓</button><button id="reportCsv" class="text-btn">CSV report</button></div>
+        <div class="download-card"><div class="download-icon">⇩</div><div><strong>Verified data copy</strong><p>Exports the selected worksheet data. Excel formatting and other sheets are not preserved in this MVP.</p></div><button id="correctedBtn" class="secondary-btn">Download data copy ↓</button></div>
+      </div>
+      <div class="privacy-foot"><span>♧</span><p><strong>Keep your data safe.</strong> This MVP stores files temporarily on the server. Use the delete-session control when finished. Do not expose this unauthenticated local MVP directly to the public internet.</p></div>
+      <button id="deleteBtn" class="danger-link">Delete uploaded session and file</button>
+    </section>
+    <footer>Built for safer pre-upload checks · Local verification only · No live Uniware connection configured</footer>
+  </main>
+</div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<script src="/static/app.js"></script>
+</body></html>
